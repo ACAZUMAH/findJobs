@@ -1,13 +1,5 @@
 import { Types } from "mongoose";
 
-declare global {
-    namespace Express {
-        interface Request {
-            user?: jwtpayload | any;
-        }
-    }
-}
-
 export interface user {
     name: string;
     email: string;
@@ -46,4 +38,3 @@ export interface queryType {
     limits?: string;
     sortBy?: string;
 }
-export {};

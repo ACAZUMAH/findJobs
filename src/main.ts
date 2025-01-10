@@ -1,10 +1,9 @@
 import { config } from 'dotenv';
-//import start  from './servers/app';
 
 const main = async () => {
     config();
-    const start = await import('./servers/app');
-    await start.default();
+    const app = await import('./app');
+    app.default();
 };
 
 main().catch((error) => {
