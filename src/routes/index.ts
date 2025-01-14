@@ -1,6 +1,6 @@
 import { Router, Express } from 'express';
-import authRoute from './auth-route';
-import jobRoute from './jobs-route';
+//import authRoute from './auth-route';
+//import jobRoute from './jobs-route';
 
 const routes: { path: string, router: Router }[] = [
   // {

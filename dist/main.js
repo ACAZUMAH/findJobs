@@ -24,13 +24,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = require("dotenv");
-//import start  from './servers/app';
 const main = async () => {
     (0, dotenv_1.config)();
-    const start = await Promise.resolve().then(() => __importStar(require('./servers/app')));
-    await start.default();
+    const app = await Promise.resolve().then(() => __importStar(require('./app')));
+    app.default();
 };
 main().catch((error) => {
     console.error('Error starting server:', error);
     process.exit(1);
 });
+//# sourceMappingURL=main.js.map

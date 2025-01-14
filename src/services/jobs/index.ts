@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import job from "../../models/schema/jobs";
+import { jobModel } from "../../models";
 import { job as jobType, queryType, update } from "../types";
 import createHttpError from "http-errors";
 
@@ -11,7 +11,7 @@ import createHttpError from "http-errors";
  * @throws Error if job creation failed
  */
 export const saveJob = async (data: jobType) => {
-  const create = await job.create({ ...data });
+  const create = await jobModel.create({ ...data });
   if (!create) throw new Error("Job creation failed");
   return create;
 };
@@ -26,7 +26,7 @@ export const getJobs = async (query: queryType) => {
   let page = Number(query.page) || 1;
   let limit = Number(query.limits) || 10;
   const skips = (page - 1) * limit
-  const jobs = job.find({});
+  const jobs = jobModel.find({});
   const result = await jobs.skip(skips).limit(limit)
   if (!result) throw new Error("No jobs found");
   return result;
@@ -42,7 +42,7 @@ export const findAllJobsByUser = async (userId: string | Types.ObjectId, query: 
   let page = Number(query.page) || 1;
   let limit = Number(query.limits) || 10;
   const skips = (page - 1) * limit;
-  const jobs = job.find({ createdBy: userId });
+  const jobs = jobModel.find({ createdBy: userId });
   const result = await jobs.skip(skips).limit(limit);
   if (!result) throw new createHttpError.BadRequest("user has no posted jobs");
   return result;
@@ -59,7 +59,7 @@ export const findJobById = async (
   userId: string | Types.ObjectId,
   jobId: string | Types.ObjectId
 ) => {
-  const data = await job.findOne({ createdBy: userId, _id: jobId });
+  const data = await jobModel.findOne({ createdBy: userId, _id: jobId });
   if (!data) throw new createHttpError.BadRequest("job not found");
   return data;
 };
@@ -71,7 +71,7 @@ export const findJobById = async (
  */
 export const updateJob = async (data: update) => {
   if (data.company || data.position || data.status || data.salary) {
-    const newUpdate = await job.findOneAndUpdate(
+    const newUpdate = await jobModel.findOneAndUpdate(
       {
         _id: data.jobId,
         createdBy: data.userId,
@@ -93,7 +93,7 @@ export const deleteJob = async (
   userId: string | Types.ObjectId,
   jobId: string | Types.ObjectId
 ) => {
-  const deleted = await job.findOneAndDelete({ createdBy: userId, _id: jobId});
+  const deleted = await jobModel.findOneAndDelete({ createdBy: userId, _id: jobId});
   if (!deleted) throw new createHttpError.BadRequest("job not found");
   return true
 };
@@ -105,43 +105,43 @@ export const deleteJob = async (
  * @returns result of filtered jobs
  * @throws BadRequest if no jobs found
  */
-export const filterJobs = async( query: queryType) => {
-  const { company, position, status, salary, page, limits, sortBy } = query;
-  const queryObject: queryType = {};
-  if (company) queryObject.company = company;
-  if (position) queryObject.position = position;
-  if (status) queryObject.status = status;
-  if (salary){
-    const operatorMap = {
-      '>': '$gt',
-      '>=': '$gte',
-      '=': '$eq',
-      '<': '$lt',
-      '<=': '$lte'
-    }
-    const regEx = /\b(<|>|>=|=|<|<=)\b/g;
-    const filter = (salary as string).replace(regEx, (matched) => `-${operatorMap[matched]}-`);
-    filter.split(',')
-    .forEach((item) => {
-      const [field, operator, value] = item.split('-');
-      queryObject[field] = { [operator]: Number(value) };
-    });
-  }
-  let result = job.find(queryObject);
-  if (sortBy){
-    const sortfields = (sortBy as string).split(',').join(' ')
-    result = result.sort(sortfields)
-  }else{
-    result = result.sort('createdAt')
-  }
-  const pages = Number(page) || 1
-  const limit = Number(limits) || 20
-  const skip = (pages - 1) * limit
-  result = result.skip(skip).limit(limit)
-  const product = await result
-  if (!product) throw new createHttpError.BadRequest("No jobs found");
-  return product;
-}
+// export const filterJobs = async( query: queryType) => {
+//   const { company, position, status, salary, page, limits, sortBy } = query;
+//   const queryObject: queryType = {};
+//   if (company) queryObject.company = company;
+//   if (position) queryObject.position = position;
+//   if (status) queryObject.status = status;
+//   if (salary){
+//     const operatorMap = {
+//       '>': '$gt',
+//       '>=': '$gte',
+//       '=': '$eq',
+//       '<': '$lt',
+//       '<=': '$lte'
+//     }
+//     const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+//     const filter = (salary as string).replace(regEx, (matched) => `-${operatorMap[matched]}-`);
+//     filter.split(',')
+//     .forEach((item) => {
+//       const [field, operator, value] = item.split('-');
+//       queryObject[field] = { [operator]: Number(value) };
+//     });
+//   }
+//   let result = job.find(queryObject);
+//   if (sortBy){
+//     const sortfields = (sortBy as string).split(',').join(' ')
+//     result = result.sort(sortfields)
+//   }else{
+//     result = result.sort('createdAt')
+//   }
+//   const pages = Number(page) || 1
+//   const limit = Number(limits) || 20
+//   const skip = (pages - 1) * limit
+//   result = result.skip(skip).limit(limit)
+//   const product = await result
+//   if (!product) throw new createHttpError.BadRequest("No jobs found");
+//   return product;
+// }
 
 export default { 
   saveJob, 
@@ -150,5 +150,4 @@ export default {
   findJobById, 
   updateJob,
   deleteJob,
-  filterJobs
 };

@@ -7,6 +7,7 @@ import { connectDB } from "./common/helpers/connectDB";
 import errorHandler from "./middlewares/error-Handler";
 import { applyMiddlewares } from "./middlewares";
 import { applyRouters } from "./routes";
+import { logger } from "./logger/logger";
 
 const PORT = process.env.PORT || 3500;
 
@@ -31,8 +32,8 @@ const startApp = async () => {
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: PORT }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:${PORT}/`);
-  console.log(`🚀 GraphQL Server ready at http://localhost:${PORT}/graphql`);
+  logger.info(`🚀 Server ready at http://localhost:${PORT}/`);
+  logger.info(`🚀 GraphQL Server ready at http://localhost:${PORT}/graphql`);
 };
 
 export default startApp;

@@ -2,3 +2,9 @@
 .env
 # Local Netlify folder
 .netlify
+
+/combine.log
+
+/error.log
+
+.vscode

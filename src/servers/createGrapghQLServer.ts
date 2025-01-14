@@ -4,7 +4,7 @@ import { ApolloServer, ContextFunction } from "@apollo/server";
 import { expressMiddleware, ExpressContextFunctionArgument } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { CreateGraphQLServer, GraphqlContext } from "../common/Interfaces";
-
+import { formatError } from "./formatError";
 const context: ContextFunction<[ExpressContextFunctionArgument], GraphqlContext> = ({ req }) => {
     const token = req.token;
     const user = req.user; 
@@ -18,6 +18,7 @@ const context: ContextFunction<[ExpressContextFunctionArgument], GraphqlContext>
 export const createGraphQLServer = async ({ app, schema, httpServer }: CreateGraphQLServer) => {
     const server = new ApolloServer({
         schema,
+        formatError,
         plugins: [ApolloServerPluginDrainHttpServer({httpServer})]
     });
 

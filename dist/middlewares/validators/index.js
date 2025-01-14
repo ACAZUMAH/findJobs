@@ -12,9 +12,9 @@ const http_errors_1 = __importDefault(require("http-errors"));
  * @throws BadRequest if validation fails
  */
 const validate = (validations) => {
-    return async (_req, _res, next) => {
+    return async (req, res, next) => {
         for (let validation of validations) {
-            const result = await validation.run(_req);
+            const result = await validation.run(req);
             if (!result.isEmpty()) {
                 throw new http_errors_1.default.BadRequest(result.array()[0].msg);
             }
@@ -24,3 +24,4 @@ const validate = (validations) => {
 };
 exports.validate = validate;
 exports.default = exports.validate;
+//# sourceMappingURL=index.js.map

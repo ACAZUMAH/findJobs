@@ -42,9 +42,9 @@ exports.getAllJobs = getAllJobs;
  * @param _res Response
  * @throws BadRequest if user has no posted jobs
  */
-const getAllJobsByUser = async (_req, _res) => {
-    const jobs = await jobs_1.default.findAllJobsByUser(_req.user._id, _req.query);
-    return _res.status(200).json({ status: 'success', data: jobs });
+const getAllJobsByUser = async (req, res) => {
+    const jobs = await jobs_1.default.findAllJobsByUser(req.user._id, req.query);
+    return res.status(200).json({ status: 'success', data: jobs });
 };
 exports.getAllJobsByUser = getAllJobsByUser;
 /**
@@ -113,3 +113,4 @@ exports.default = {
     deleteJob: exports.deleteJob,
     searchJobs: exports.searchJobs
 };
+//# sourceMappingURL=jobs.js.map

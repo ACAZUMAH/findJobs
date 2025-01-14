@@ -8,17 +8,13 @@ export const authTypeDef = `#graphql
         message: String
     }
 
-    type loginResponse {
-        message: String
-    }
-
     type Query {
         auth: authenticated
     }
 
     type Mutation {
         signupWithPhoneAndPassword(input: signupInput): signupResponse!
-        loginWithPhoneAndPassword(input: loginInput): loginResponse!
+        loginWithPhoneAndPassword(input: loginInput): authenticated!
         verifyOtp(input: otpInput): authenticated!
     }
 

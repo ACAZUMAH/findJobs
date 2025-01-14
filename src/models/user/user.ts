@@ -1,6 +1,7 @@
 import { Schema, Types, model } from 'mongoose';
+import { userDocument } from '../../common/Interfaces';
 
-const userSchema = new Schema({
+const userSchema = new Schema<userDocument>({
     username: { type: String, required: true },
     name: { type: String, minlentgh: 3, maxLength: 30, },
     email: { type: String, unique: true },
@@ -9,4 +10,4 @@ const userSchema = new Schema({
     isAuthenticated: { type: Boolean, default: false }
 }, { timestamps: true })
 
-export const userModal = model('User', userSchema);
+export const userModel = model('User', userSchema);

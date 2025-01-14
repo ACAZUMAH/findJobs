@@ -1,6 +1,5 @@
 import helmet, { HelmetOptions } from "helmet";
 import cors from "cors";
-import xss from "xss-clean";
 import limit from "express-rate-limit";
 import express, { Application } from "express";
 
@@ -28,8 +27,6 @@ export const createExpressApp = () => {
   app.use(helmet(helmetOtpions));
   
   app.use(cors());
-
-  app.use(xss());
   
   return app;
 };

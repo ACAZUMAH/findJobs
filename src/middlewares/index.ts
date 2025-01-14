@@ -1,4 +1,4 @@
-import { verifyAcessToken } from "./verifyAccessToken";
+import { verifyAcessToken } from "./verify-token";
 import { Express } from "express";
 
 const middlewares = [verifyAcessToken];

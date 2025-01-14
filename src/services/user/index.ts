@@ -1,7 +1,8 @@
-import { userModal } from '../../models';
+import { userModel } from '../../models';
 import createError from 'http-errors';
 import { Types } from 'mongoose';
-import { authInput } from '../../common/Interfaces';
+import { createUserInput } from '../../common/Interfaces';
+import { validateCreateUserData } from './validators';
 
 /**
  * this function creates a new user and returns the created user
@@ -9,8 +10,9 @@ import { authInput } from '../../common/Interfaces';
  * @returns  created user
  * @throws  InternalServerError if user creation fails
  */
-export const createUser = async (data: authInput) => {
-    const user = await userModal.create({ ...data });
+export const createUser = async (data: createUserInput) => {
+    validateCreateUserData(data);
+    const user = await userModel.create({ ...data });
     if(!user) throw new createError.InternalServerError('User creation failed');
     return user;
 };
@@ -21,7 +23,7 @@ export const createUser = async (data: authInput) => {
  * @throws  BadRequest if user exists
  */
 export const checkUserExists = async (email?: string, phone?: string) => {
-    const user = await userModal.findOne({ $or: [{ email, phone }]  })
+    const user = await userModel.findOne({ $or: [{ email, phone }]  })
     if(user) throw new createError.BadRequest('User already exists');
 };
 
@@ -31,9 +33,8 @@ export const checkUserExists = async (email?: string, phone?: string) => {
  * @returns 
  */
 export const getUserById = async (id: string | Types.ObjectId) => {
-    if(!Types.ObjectId.isValid(id)) 
-        throw new createError.BadRequest('Invalid user id');
-    const data = await userModal.findById(id);
+    if(!Types.ObjectId.isValid(id))  throw new createError.BadRequest('Invalid user id');
+    const data = await userModel.findById(id);
     if(!data) throw new createError.NotFound('User not found');
     return data;
 };
@@ -44,13 +45,13 @@ export const getUserById = async (id: string | Types.ObjectId) => {
  * @returns 
  */
 export const updateisAuthenticated = async (id: string | Types.ObjectId) => {
-    const update = await userModal.findByIdAndUpdate(
+    const update = await userModel.findByIdAndUpdate(
         id, 
         { isAuthenticated: true },
         { new: true }
     )
     if(!update) throw Error('Internal Server Error');
-    return true;
+    return update;
 };
 
 /**
@@ -60,7 +61,13 @@ export const updateisAuthenticated = async (id: string | Types.ObjectId) => {
  * @throws  BadRequest if user does not exist
  */
 export const findUserByEmail = async (email: string) => {
-    const user = await userModal.findOne({ email }); 
+    const user = await userModel.findOne({ email }); 
     if(!user) throw new createError.BadRequest('No user with this email');
+    return user;
+};
+
+export const getUserByPhone = async (phone: string) => {
+    const user = await userModel.findOne({ phone });
+    if (!user) throw new createError.BadRequest("No user with this phone number");
     return user;
 };

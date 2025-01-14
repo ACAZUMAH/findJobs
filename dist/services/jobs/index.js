@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.filterJobs = exports.deleteJob = exports.updateJob = exports.findJobById = exports.findAllJobsByUser = exports.getJobs = exports.saveJob = void 0;
-const jobs_1 = __importDefault(require("../../models/schema/jobs"));
+const jobs_1 = __importDefault(require("../../models/jobs/jobs"));
 const http_errors_1 = __importDefault(require("http-errors"));
 /**
  * this function saves a job to the database
@@ -155,3 +155,4 @@ exports.default = {
     deleteJob: exports.deleteJob,
     filterJobs: exports.filterJobs
 };
+//# sourceMappingURL=index.js.map

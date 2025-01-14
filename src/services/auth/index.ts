@@ -25,9 +25,7 @@ export const verifyOtpAndCompleteAuth = async (token: string) =>{
 
     if(new Date(auth.expiresIn) < new Date()) throw createError.BadRequest('Expired otp');
 
-    const user = await getUserById(String(auth.userId));
-
-    await updateisAuthenticated(user._id);
+    const user = await updateisAuthenticated(auth.userId);
     
     const authToken = jwtSign({ id: user._id });
 
