@@ -1,14 +1,20 @@
-import { Router } from 'express';
-import authRoute from './auth-route';
-import jobRoute from './jobs-route';
+import { Router, Express } from 'express';
+//import authRoute from './auth-route';
+//import jobRoute from './jobs-route';
 
-const router = Router();
+const routes: { path: string, router: Router }[] = [
+  // {
+  //   path: '/api',
+  //   router: authRoute
+  // },
+  // {
+  //   path: '/api',
+  //   router: jobRoute
+  // }
+]
 
-router.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the job portal API' });
-});
-router.use('/api', authRoute);  
-router.use('/api', jobRoute);
 
-export default router;
+export const applyRouters = (app: Express ) => {
+  routes.map((route) => { app.use(route.path, route.router)});
+};
 

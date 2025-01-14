@@ -1,26 +1,26 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "allowJs": true,
-        "target": "ESNext",
-        "module": "CommonJS",
-        "outDir": "dist",
-        "rootDir": "./src",
-        "moduleResolution": "node",
-        "strictNullChecks": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "baseUrl": ".",
-        "paths": {
-          "@/*": [
-            "src/*"
-          ]
-        }
+      "allowJs": true,
+      "target": "esnext",
+      "module": "CommonJS",
+      "outDir": "dist",
+      "rootDir": "./src",
+      "moduleResolution": "node",
+      "strictNullChecks": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "baseUrl": ".",
+      "paths": {
+        "src/*": ["src/*"]
+      },
+      "types": ["node"],
+      "strict": true,
+      "noImplicitAny": true,
+      "resolveJsonModule": true,
+      "sourceMap": true,
+      "forceConsistentCasingInFileNames": true
     },
-    "include": [
-        "src/**/*.ts"],
-    "exclude": [
-        "node_modules"
-    ]
-  }
+    "include": ["src/"],
+    "exclude": ["node_modules"]
+}

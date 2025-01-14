@@ -10,9 +10,9 @@ import { ContextRunner } from "express-validator";
  * @throws BadRequest if validation fails
  */
 export const validate = (validations: ContextRunner[]) => {
-    return async (_req: Request, _res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
         for ( let validation of validations){
-            const result = await validation.run(_req);
+            const result = await validation.run(req);
             if(!result.isEmpty()){
                 throw new createHttpError.BadRequest(result.array()[0].msg);
             }

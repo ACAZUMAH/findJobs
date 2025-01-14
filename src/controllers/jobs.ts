@@ -18,9 +18,9 @@ export const getAllJobs = async (_req: Request, _res: Response) =>{
  * @param _res Response
  * @throws BadRequest if user has no posted jobs
  */
-export const getAllJobsByUser = async (_req: Request, _res: Response) =>{
-    const jobs = await job.findAllJobsByUser(_req.user._id, _req.query);
-    return  _res.status(200).json({ status: 'success', data: jobs });
+export const getAllJobsByUser = async (req: Request, res: Response) =>{
+    const jobs = await job.findAllJobsByUser(req.user._id, req.query);
+    return  res.status(200).json({ status: 'success', data: jobs });
 }
 
 /**

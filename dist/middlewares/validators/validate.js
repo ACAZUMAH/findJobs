@@ -82,3 +82,4 @@ exports.ValidateUpdateJob = [
         .notEmpty()
         .withMessage('please provide salary')
 ];
+//# sourceMappingURL=validate.js.map

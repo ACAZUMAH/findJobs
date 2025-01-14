@@ -3,40 +3,56 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "tsc && tsc-alias",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/main.js",
-    "dev": "tsnd src/main.ts"
+    "start:dev": "nodemon",
+    "dev": "ts-node-dev --respawn src/main.ts",
+    "generate": "graphql-codegen --config codegen.ts"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@types/bcrypt": "^5.0.2",
+    "@apollo/server": "^4.11.2",
+    "@graphql-tools/schema": "^10.0.14",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
+    "dataloader": "^2.2.3",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "express-async-errors": "^3.1.1",
     "express-rate-limit": "^7.4.0",
     "express-validator": "^7.2.0",
+    "graphql": "^16.10.0",
     "helmet": "^7.1.0",
     "http-errors": "^2.0.0",
-    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.3",
     "rate-limiter": "^0.2.0",
     "swagger-ui-express": "^5.0.1",
     "typescript": "^5.6.2",
+    "winston": "^3.17.0",
     "xss-clean": "^0.1.4",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.3",
+    "@graphql-codegen/typescript": "^4.1.2",
+    "@graphql-codegen/typescript-resolvers": "^4.4.1",
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.7",
-    "ts-node-dev": "^2.0.0"
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0"
   },
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   }
 }
