@@ -24,3 +24,8 @@ export interface CreateGraphQLServer {
   httpServer: Server;
 };
 
+
+export interface CreateGraphQLsubscriptionServer {
+  httpServer: Server,
+  schema: GraphQLSchema
+}

@@ -1,4 +1,4 @@
-export const authTypeDef = `#graphql
+export const authTypeDefs = `#graphql
     type authenticated {
         user: User!
         token: String
@@ -8,14 +8,14 @@ export const authTypeDef = `#graphql
         message: String
     }
 
-    type Query {
+    extend type Query {
         auth: authenticated
     }
 
-    type Mutation {
-        signupWithPhoneAndPassword(input: signupInput): signupResponse!
-        loginWithPhoneAndPassword(input: loginInput): authenticated!
-        verifyOtp(input: otpInput): authenticated!
+    extend type Mutation {
+        signupWithPhoneAndPassword(data: signupInput): signupResponse!
+        loginWithPhoneAndPassword(data: loginInput): authenticated!
+        verifyOtp(data: otpInput): authenticated!
     }
 
     input signupInput {

@@ -5,21 +5,42 @@ import { expressMiddleware, ExpressContextFunctionArgument } from "@apollo/serve
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { CreateGraphQLServer, GraphqlContext } from "../common/Interfaces";
 import { formatError } from "./formatError";
-const context: ContextFunction<[ExpressContextFunctionArgument], GraphqlContext> = ({ req }) => {
-    const token = req.token;
-    const user = req.user; 
+import { isProduction } from "../common/contstants";
+import { createGraphQLsubscriptionServer } from "./createGrapghQLSubscriptionServer";
 
-    return Promise.resolve({
+const context: ContextFunction<[ExpressContextFunctionArgument], GraphqlContext> = async ({ req }) => {
+
+    if(req.user){
+        console.log(req.user!);
+    }
+
+    const token = req.token;
+    const user = req.user;
+
+    return {
         user,
-        token
-    });
+        token,
+    };
 };
 
 export const createGraphQLServer = async ({ app, schema, httpServer }: CreateGraphQLServer) => {
+    const subscriptionServerCleanup = createGraphQLsubscriptionServer({ schema, httpServer })
     const server = new ApolloServer({
         schema,
         formatError,
-        plugins: [ApolloServerPluginDrainHttpServer({httpServer})]
+        introspection: !isProduction,
+        plugins: [
+           {
+                async serverWillStart() {
+                    return {
+                        async drainServer() {
+                            await subscriptionServerCleanup.dispose()
+                        }
+                    }
+                }
+            },
+            ApolloServerPluginDrainHttpServer({httpServer})
+        ]
     });
 
     await server.start();

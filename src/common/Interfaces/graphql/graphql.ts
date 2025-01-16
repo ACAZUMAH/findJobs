@@ -18,36 +18,50 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  _empty?: Maybe<Scalars['String']['output']>;
   loginWithPhoneAndPassword: Authenticated;
   signupWithPhoneAndPassword: SignupResponse;
+  updateUser: User;
   verifyOtp: Authenticated;
 };
 
 
 export type MutationLoginWithPhoneAndPasswordArgs = {
-  input?: InputMaybe<LoginInput>;
+  data?: InputMaybe<LoginInput>;
 };
 
 
 export type MutationSignupWithPhoneAndPasswordArgs = {
-  input?: InputMaybe<SignupInput>;
+  data?: InputMaybe<SignupInput>;
+};
+
+
+export type MutationUpdateUserArgs = {
+  data?: InputMaybe<UpdateUserInput>;
 };
 
 
 export type MutationVerifyOtpArgs = {
-  input?: InputMaybe<OtpInput>;
+  data?: InputMaybe<OtpInput>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  _empty?: Maybe<Scalars['String']['output']>;
   auth?: Maybe<Authenticated>;
-  me?: Maybe<User>;
+  hello?: Maybe<Scalars['String']['output']>;
+  me: User;
   user: User;
 };
 
 
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  _empty?: Maybe<Scalars['String']['output']>;
 };
 
 export type User = {
@@ -84,6 +98,13 @@ export type SignupInput = {
 export type SignupResponse = {
   __typename?: 'signupResponse';
   message?: Maybe<Scalars['String']['output']>;
+};
+
+export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -162,12 +183,14 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Subscription: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   authenticated: ResolverTypeWrapper<Authenticated>;
   loginInput: LoginInput;
   otpInput: OtpInput;
   signupInput: SignupInput;
   signupResponse: ResolverTypeWrapper<SignupResponse>;
+  updateUserInput: UpdateUserInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -177,24 +200,34 @@ export type ResolversParentTypes = {
   Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
+  Subscription: {};
   User: User;
   authenticated: Authenticated;
   loginInput: LoginInput;
   otpInput: OtpInput;
   signupInput: SignupInput;
   signupResponse: SignupResponse;
+  updateUserInput: UpdateUserInput;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   loginWithPhoneAndPassword?: Resolver<ResolversTypes['authenticated'], ParentType, ContextType, Partial<MutationLoginWithPhoneAndPasswordArgs>>;
   signupWithPhoneAndPassword?: Resolver<ResolversTypes['signupResponse'], ParentType, ContextType, Partial<MutationSignupWithPhoneAndPasswordArgs>>;
+  updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
   verifyOtp?: Resolver<ResolversTypes['authenticated'], ParentType, ContextType, Partial<MutationVerifyOtpArgs>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   auth?: Resolver<Maybe<ResolversTypes['authenticated']>, ParentType, ContextType>;
-  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+};
+
+export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -221,6 +254,7 @@ export type SignupResponseResolvers<ContextType = any, ParentType extends Resolv
 export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   authenticated?: AuthenticatedResolvers<ContextType>;
   signupResponse?: SignupResponseResolvers<ContextType>;

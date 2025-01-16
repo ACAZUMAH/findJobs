@@ -7,18 +7,18 @@ import {
 } from "../../common/Interfaces/graphql/graphql";
 
 const signupWithPhoneAndPassword = async (_: any, args: MutationSignupWithPhoneAndPasswordArgs ) => {
-    return await register(args.input!);
+    return await register(args.data!);
 };
 
 const loginWithPhoneAndPassword = async (_: any, args: MutationLoginWithPhoneAndPasswordArgs) => {
-    return await login(args.input!);
+    return await login(args.data!);
 }
 
 const verifyOtp = async (_: any, args: MutationVerifyOtpArgs) => {
-    return await verifyOtpAndCompleteAuth(args.input!.code);
+    return await verifyOtpAndCompleteAuth(args.data!.code);
 };
 
-export const authResolver = {
+export const authResolvers = {
     Mutation: {
         signupWithPhoneAndPassword,
         loginWithPhoneAndPassword,
