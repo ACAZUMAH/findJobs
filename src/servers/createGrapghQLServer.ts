@@ -9,11 +9,6 @@ import { isProduction } from "../common/contstants";
 import { createGraphQLsubscriptionServer } from "./createGrapghQLSubscriptionServer";
 
 const context: ContextFunction<[ExpressContextFunctionArgument], GraphqlContext> = async ({ req }) => {
-
-    if(req.user){
-        console.log(req.user!);
-    }
-
     const token = req.token;
     const user = req.user;
 

@@ -22,9 +22,9 @@ export const verifyAcessToken = async (req: Request, res: Response, next: NextFu
 
         const user: userDocument = await getUserById(data.id);
 
-        //console.log(user)
+        req.user = user;
 
-        return req.user = user;
+        return next();
 
     } catch (err: any) {
         throw new createError.Unauthorized(err?.message || 'Invalid token');
