@@ -27,6 +27,10 @@ export const createExpressApp = () => {
   app.use(helmet(helmetOtpions));
   
   app.use(cors());
+
+  app.get('/', (_, res) => {
+    res.send('FindJobs')
+  })
   
   return app;
 };

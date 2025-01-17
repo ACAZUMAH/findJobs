@@ -20,3 +20,11 @@ export interface loginUserInput {
     phone: string
     password: string
 }
+
+export interface updateUserInput {
+    id: string | Types.ObjectId
+    usename?: string
+    name?: string | null
+    email?: string | null
+    phone?: string | null
+}

@@ -16,6 +16,7 @@ const startApp = async () => {
   const httpServer = http.createServer(app);
 
   applyMiddlewares(app);
+
   applyRouters(app);
 
   await createGraphQLServer({ app, schema, httpServer });
@@ -24,14 +25,14 @@ const startApp = async () => {
 
   app.use(errorHandler);
 
-  app.all("*", (_req, _res, next) => {
-    console.log('here')
-    //next(createError(404, 'unable to retrive requested resources'))
-  });
+  // app.all("*", (_, __, next) => {
+  //   next(createError(404, 'unable to retrive requested resources'))
+  // });
 
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: PORT }, resolve)
   );
+
   logger.info(`🚀 Server ready at http://localhost:${PORT}/`);
   logger.info(`🚀 GraphQL Server ready at http://localhost:${PORT}/graphql`);
 };

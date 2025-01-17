@@ -2,7 +2,7 @@ import { Schema, Types, model } from 'mongoose';
 import { userDocument } from '../../common/Interfaces';
 
 const userSchema = new Schema<userDocument>({
-    username: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     name: { type: String, minlentgh: 3, maxLength: 30, },
     email: { type: String, unique: true },
     phone: { type: String, required: true },

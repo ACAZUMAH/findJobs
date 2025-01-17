@@ -11,6 +11,7 @@ export const verifyAcessToken = async (req: Request, res: Response, next: NextFu
         if(!bearerHeader) return next();
 
         const bearer = bearerHeader.split(' ');
+
         const bearerToken = bearer.length > 1 ? bearer[1] : bearer[0];
 
         if(!bearerToken) return next();
@@ -22,6 +23,8 @@ export const verifyAcessToken = async (req: Request, res: Response, next: NextFu
         const user: userDocument = await getUserById(data.id);
 
         req.user = user;
+
+        return next();
 
     } catch (err: any) {
         throw new createError.Unauthorized(err?.message || 'Invalid token');
