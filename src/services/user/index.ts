@@ -34,7 +34,7 @@ export const checkUserExists = async (email?: string, phone?: string) => {
  */
 export const getUserById = async (id: string | Types.ObjectId) => {
     if(!Types.ObjectId.isValid(id))  throw new createError.BadRequest('Invalid user id');
-    const data = await userModel.findById(id);
+    const data = await userModel.findById(id, { __v: 0 });
     if(!data) throw new createError.NotFound('User not found');
     return data;
 };

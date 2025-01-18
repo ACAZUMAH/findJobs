@@ -21,6 +21,7 @@ const verifyAcessToken = async (req, res, next) => {
             return next();
         const user = await (0, index_2.getUserById)(data.id);
         req.user = user;
+        return next();
     }
     catch (err) {
         throw new http_errors_1.default.Unauthorized(err?.message || 'Invalid token');

@@ -16,13 +16,54 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CreateJobInput = {
+  company: Scalars['String']['input'];
+  description: Scalars['String']['input'];
+  location: Scalars['String']['input'];
+  position: Scalars['String']['input'];
+  requirements: Array<Scalars['String']['input']>;
+  salary: Scalars['Float']['input'];
+  workArrangement: WorkArrangement;
+};
+
+export type Job = {
+  __typename?: 'Job';
+  company: Scalars['String']['output'];
+  createdBy: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  location: Scalars['String']['output'];
+  position: Scalars['String']['output'];
+  requirements: Array<Scalars['String']['output']>;
+  salary?: Maybe<Scalars['Float']['output']>;
+  user?: Maybe<User>;
+  workArrangement: WorkArrangement;
+};
+
+export type JobFilters = {
+  company?: InputMaybe<Scalars['String']['input']>;
+  createdBy?: InputMaybe<Scalars['String']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  position?: InputMaybe<Scalars['String']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  workArrangement?: InputMaybe<WorkArrangement>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']['output']>;
+  createJob: Job;
   loginWithPhoneAndPassword: Authenticated;
   signupWithPhoneAndPassword: SignupResponse;
   updateUser: User;
   verifyOtp: Authenticated;
+};
+
+
+export type MutationCreateJobArgs = {
+  data?: InputMaybe<CreateJobInput>;
 };
 
 
@@ -49,9 +90,21 @@ export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
   auth?: Maybe<Authenticated>;
+  getJob: Job;
+  getJobs: Array<Maybe<Job>>;
   hello?: Maybe<Scalars['String']['output']>;
   me: User;
   user: User;
+};
+
+
+export type QueryGetJobArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryGetJobsArgs = {
+  filters: JobFilters;
 };
 
 
@@ -64,15 +117,31 @@ export type Subscription = {
   _empty?: Maybe<Scalars['String']['output']>;
 };
 
+export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type User = {
   __typename?: 'User';
   email?: Maybe<Scalars['String']['output']>;
+  firstName?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   isAuthenticated?: Maybe<Scalars['Boolean']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  jobs?: Maybe<Job>;
+  lastName?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
   username: Scalars['String']['output'];
 };
+
+export enum WorkArrangement {
+  HYBRID = 'HYBRID',
+  ON_SITE = 'ON_SITE',
+  REMOTE = 'REMOTE'
+}
 
 export type Authenticated = {
   __typename?: 'authenticated';
@@ -98,13 +167,6 @@ export type SignupInput = {
 export type SignupResponse = {
   __typename?: 'signupResponse';
   message?: Maybe<Scalars['String']['output']>;
-};
-
-export type UpdateUserInput = {
-  email?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -179,39 +241,65 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateJobInput: CreateJobInput;
+  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Job: ResolverTypeWrapper<Job>;
+  JobFilters: JobFilters;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Subscription: ResolverTypeWrapper<{}>;
+  UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User>;
+  WorkArrangement: WorkArrangement;
   authenticated: ResolverTypeWrapper<Authenticated>;
   loginInput: LoginInput;
   otpInput: OtpInput;
   signupInput: SignupInput;
   signupResponse: ResolverTypeWrapper<SignupResponse>;
-  updateUserInput: UpdateUserInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  CreateJobInput: CreateJobInput;
+  Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
+  Int: Scalars['Int']['output'];
+  Job: Job;
+  JobFilters: JobFilters;
   Mutation: {};
   Query: {};
   String: Scalars['String']['output'];
   Subscription: {};
+  UpdateUserInput: UpdateUserInput;
   User: User;
   authenticated: Authenticated;
   loginInput: LoginInput;
   otpInput: OtpInput;
   signupInput: SignupInput;
   signupResponse: SignupResponse;
-  updateUserInput: UpdateUserInput;
+};
+
+export type JobResolvers<ContextType = any, ParentType extends ResolversParentTypes['Job'] = ResolversParentTypes['Job']> = {
+  company?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdBy?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  position?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  requirements?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  salary?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  workArrangement?: Resolver<ResolversTypes['WorkArrangement'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createJob?: Resolver<ResolversTypes['Job'], ParentType, ContextType, Partial<MutationCreateJobArgs>>;
   loginWithPhoneAndPassword?: Resolver<ResolversTypes['authenticated'], ParentType, ContextType, Partial<MutationLoginWithPhoneAndPasswordArgs>>;
   signupWithPhoneAndPassword?: Resolver<ResolversTypes['signupResponse'], ParentType, ContextType, Partial<MutationSignupWithPhoneAndPasswordArgs>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
@@ -221,6 +309,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   auth?: Resolver<Maybe<ResolversTypes['authenticated']>, ParentType, ContextType>;
+  getJob?: Resolver<ResolversTypes['Job'], ParentType, ContextType, RequireFields<QueryGetJobArgs, 'id'>>;
+  getJobs?: Resolver<Array<Maybe<ResolversTypes['Job']>>, ParentType, ContextType, RequireFields<QueryGetJobsArgs, 'filters'>>;
   hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
@@ -232,9 +322,11 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  firstName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isAuthenticated?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  jobs?: Resolver<Maybe<ResolversTypes['Job']>, ParentType, ContextType>;
+  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -252,6 +344,7 @@ export type SignupResponseResolvers<ContextType = any, ParentType extends Resolv
 };
 
 export type Resolvers<ContextType = any> = {
+  Job?: JobResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;

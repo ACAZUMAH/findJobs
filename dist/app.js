@@ -21,10 +21,9 @@ const startApp = async () => {
     await (0, servers_1.createGraphQLServer)({ app, schema: graphQL_1.schema, httpServer });
     await (0, connectDB_1.connectDB)(String(process.env.MONGO_URL));
     app.use(error_Handler_1.default);
-    app.all("*", (_req, _res, next) => {
-        console.log('here');
-        //next(createError(404, 'unable to retrive requested resources'))
-    });
+    // app.all("*", (_, __, next) => {
+    //   next(createError(404, 'unable to retrive requested resources'))
+    // });
     await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
     logger_1.logger.info(`🚀 Server ready at http://localhost:${PORT}/`);
     logger_1.logger.info(`🚀 GraphQL Server ready at http://localhost:${PORT}/graphql`);

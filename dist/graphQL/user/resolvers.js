@@ -23,18 +23,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userResolver = void 0;
-const userServices = __importStar(require("../../services/user/index"));
+exports.userResolvers = void 0;
+const userService = __importStar(require("../../services/user/index"));
 const me = async (_, __, context) => {
-    return await userServices.getUserById(`${context.user?._id}`);
+    return userService.getUserById(context.user?._id);
 };
 const user = async (_, args) => {
-    return await userServices.getUserById(args.id);
+    return userService.getUserById(args.id);
 };
-exports.userResolver = {
+const updateUser = async (_, args, { user }) => {
+    return userService.getUserByIdAndUpdate({ id: `${user?._id}`, ...args.data });
+};
+const jobs = (parent, _, { jobLoader }) => {
+    return parent.id ? jobLoader.load(parent.id.toString()) : null;
+};
+exports.userResolvers = {
     Query: {
         me,
         user
+    },
+    Mutation: {
+        updateUser
+    },
+    User: {
+        jobs
     }
 };
 //# sourceMappingURL=resolvers.js.map

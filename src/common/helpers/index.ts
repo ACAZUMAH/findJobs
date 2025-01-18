@@ -1,7 +1,6 @@
 import { Types } from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { genSalt, hash, compare } from "bcrypt";
-import createHttpError from "http-errors";
 
 /**
  * this function hashes user password
@@ -39,15 +38,29 @@ export const comparePassword = async (password: string, hash: string) => {
     }
 }
 
+/**
+ * 
+ * @param obj 
+ * @returns 
+ */
 export const jwtSign = (obj: object) => {
     return jwt.sign(obj, `${process.env.JWT_SECRET}`, { expiresIn: '30d' })
 };
 
+/**
+ * 
+ * @param token 
+ * @returns 
+ */
 export const jwtVerify = (token: string): any => {
     return jwt.verify(token, `${process.env.JWT_SECRET}`);
 };
 
-
+/**
+ * 
+ * @param len 
+ * @returns 
+ */
 export const generateOTP = (len = 4) => {
   const characters = '0123456789';
   const charLength = characters.length;
@@ -56,4 +69,42 @@ export const generateOTP = (len = 4) => {
     otp += characters.charAt(Math.floor(Math.random() * charLength))
   };
   return otp;
+};
+
+/**
+ * 
+ * @param limit 
+ * @returns 
+ */
+export const getSanitizeLimit = (limit?: string | number | null) => {
+  const limitNumber = Number(limit);
+  if(Number.isNaN(limitNumber)) return 10;
+  return Math.min(Math.max(limitNumber, 1), 100);
+};
+
+/**
+ * 
+ * @param page 
+ */
+export const getSanitizePage = (page?: string | number | null) => {
+  const pageNumber = Number(page);
+  if(Number.isNaN(pageNumber)) return 1;
+  return Math.max(pageNumber, 1)
+};
+
+/**
+ * 
+ * @param page 
+ * @param limit 
+ * @returns 
+ */
+export const getSanitizeOffset = (page: number, limit: number) => {
+  return (page - 1) * limit;
+};
+
+export const getPageConnection = <T>(data: Array<T>, page: number, limit: number) => {
+  const hasNextPage = data.length > limit;
+  const edges = hasNextPage ? data.slice(0, limit) : data;
+  const pageInfo = { page, limit, total: data.length, hasNextPage };
+  return { data: edges, info: pageInfo }
 };

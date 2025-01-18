@@ -1,4 +1,2 @@
-const jobsTypeDefs = `#graphql 
-`
-
-export default jobsTypeDefs;
+export * from './resolver'
+export * from './typeDef'

@@ -3,11 +3,12 @@ import { userDocument } from '../../common/Interfaces';
 
 const userSchema = new Schema<userDocument>({
     username: { type: String, required: true, unique: true },
-    name: { type: String, minlentgh: 3, maxLength: 30, },
+    firstName: { type: String, minlentgh: 3, maxLength: 30 },
+    lastName: { type: String, minlength: 3, maxlength: 30 },
     email: { type: String, unique: true },
     phone: { type: String, required: true },
     password: { type: String, required: true },
     isAuthenticated: { type: Boolean, default: false }
 }, { timestamps: true })
 
-export const userModel = model('User', userSchema);
+export const userModel = model('users', userSchema);

@@ -49,13 +49,14 @@ export const validateUpdateUserData = (data: updateUserInput) => {
   });
 
   const schema = {
-    type: 'object',
+    type: "object",
     properties: {
-      name: { type: 'string' },
-      username: { type: 'string' },
-      email: { type: 'string', format: 'email' },
-      phone: { type: 'string' }
-    }
+      username: { type: "string" },
+      firstName: { type: "string" },
+      lastName: { type: "string" },
+      email: { type: "string", format: "email" },
+      phone: { type: "string" },
+    },
   };
 
   const validate = ajv.compile(schema);

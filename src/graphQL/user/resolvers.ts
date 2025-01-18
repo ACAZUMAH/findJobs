@@ -1,5 +1,5 @@
-import { MutationUpdateUserArgs, QueryUserArgs } from '../../common/Interfaces/graphql/graphql';
-import { GraphqlContext } from '../../common/Interfaces';
+import { MutationUpdateUserArgs, QueryUserArgs, User } from '../../common/Interfaces/graphql/graphql';
+import { GraphqlContext, userDocument } from '../../common/Interfaces';
 import * as userService from '../../services/user/index';
 
 const me = async (_: any, __: any, context: GraphqlContext ) => {
@@ -14,6 +14,10 @@ const updateUser = async (_: any, args: MutationUpdateUserArgs, { user }: Graphq
     return userService.getUserByIdAndUpdate({ id: `${user?._id}`, ...args.data})
 };
 
+const jobs = (parent: User, _: any, { jobLoader }: GraphqlContext) => {
+    return parent.id ? jobLoader.load(parent.id.toString()) : null;
+};
+
 export const userResolvers = {
     Query: {
         me,
@@ -22,5 +26,9 @@ export const userResolvers = {
 
     Mutation: {
         updateUser
+    },
+
+    User: {
+        jobs
     }
-}
+};
