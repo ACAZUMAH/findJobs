@@ -1,9 +1,8 @@
 import { FilterQuery, QueryOptions, Types } from "mongoose";
 import { jobModel } from "../../models";
-import { queryType, update } from "../types";
 import createError from "http-errors";
 import { validateJobData } from "./validators";
-import { createJob, jobDocument, jobsfilter } from "../../common/Interfaces";
+import { createJob, jobDocument, jobsfilter, updateJob } from "../../common/Interfaces";
 import { 
   getPageConnection, 
   getSanitizeLimit, 
@@ -97,18 +96,19 @@ export const findAllJobsByUser = async (filter: jobsfilter) => {
 };
 
 /**
- * this function gets a one job from the database by id
+ * get job by id
  * @param userId user id
  * @param jobId job id
  * @returns one job by id
  * @throws BadRequest if job not found
  */
-export const findJobById = async (
-  userId: string | Types.ObjectId,
-  jobId: string | Types.ObjectId
-) => {
-  const data = await jobModel.findOne({ createdBy: userId, _id: jobId });
+export const findJobById = async (jobId: string | Types.ObjectId) => {
+  if(!Types.ObjectId.isValid(jobId)) throw new createError.BadRequest('Invalid job id');
+
+  const data = await jobModel.findOne({ _id: jobId });
+
   if (!data) throw new createError.BadRequest("job not found");
+
   return data;
 };
 
@@ -117,17 +117,25 @@ export const findJobById = async (
  * @param data userId, jobId and new job data to update
  * @returns updated job
  */
-export const updateJob = async (data: update) => {
-  if (data.company || data.position || data.status || data.salary) {
-    const newUpdate = await jobModel.findOneAndUpdate(
-      {
-        _id: data.jobId,
-        createdBy: data.userId,
-      },
-      { $set: { ...data } }
-    );
-    return newUpdate;
-  }
+export const updateJobById = async (data: updateJob) => {
+  
+  const job = await findJobById(data.id);
+
+  const updateData = {
+    ...(data.company && { company: data.company }),
+    ...(data.location && { location: data.location }),
+    ...(data.position && { position: data.position }),
+    ...(data.description && { description: data.description }),
+    ...(data.workArrangement && { workArrangement: data.workArrangement}),
+    ...(data.requirements && { requirements: data.requirements }),
+    ...(data.salary && { salary: data.salary })
+  };
+
+  return await jobModel.findByIdAndUpdate(
+    { _id: job._id },
+    { $set:  updateData },
+    { new: true }
+  );
 };
 
 /**
@@ -137,65 +145,13 @@ export const updateJob = async (data: update) => {
  * @returns true if job is deleted
  * @throws BadRequest if job not found
  */
-export const deleteJob = async (
-  userId: string | Types.ObjectId,
-  jobId: string | Types.ObjectId
-) => {
+export const deleteJob = async (userId: string | Types.ObjectId, jobId: string | Types.ObjectId) => {
+  if(!Types.ObjectId.isValid(jobId) || !Types.ObjectId.isValid(userId))
+    throw new createError.BadRequest("Invalid job Id or user id");
+
   const deleted = await jobModel.findOneAndDelete({ createdBy: userId, _id: jobId});
+
   if (!deleted) throw new createError.BadRequest("job not found");
-  return true
-};
 
-/**
- * filter jobs by company, position, status, salary, page, limits and sortBy
- * and return the result
- * @param query query parameters
- * @returns result of filtered jobs
- * @throws BadRequest if no jobs found
- */
-// export const filterJobs = async( query: queryType) => {
-//   const { company, position, status, salary, page, limits, sortBy } = query;
-//   const queryObject: queryType = {};
-//   if (company) queryObject.company = company;
-//   if (position) queryObject.position = position;
-//   if (status) queryObject.status = status;
-//   if (salary){
-//     const operatorMap = {
-//       '>': '$gt',
-//       '>=': '$gte',
-//       '=': '$eq',
-//       '<': '$lt',
-//       '<=': '$lte'
-//     }
-//     const regEx = /\b(<|>|>=|=|<|<=)\b/g;
-//     const filter = (salary as string).replace(regEx, (matched) => `-${operatorMap[matched]}-`);
-//     filter.split(',')
-//     .forEach((item) => {
-//       const [field, operator, value] = item.split('-');
-//       queryObject[field] = { [operator]: Number(value) };
-//     });
-//   }
-//   let result = job.find(queryObject);
-//   if (sortBy){
-//     const sortfields = (sortBy as string).split(',').join(' ')
-//     result = result.sort(sortfields)
-//   }else{
-//     result = result.sort('createdAt')
-//   }
-//   const pages = Number(page) || 1
-//   const limit = Number(limits) || 20
-//   const skip = (pages - 1) * limit
-//   result = result.skip(skip).limit(limit)
-//   const product = await result
-//   if (!product) throw new createHttpError.BadRequest("No jobs found");
-//   return product;
-// }
-
-export default { 
-  saveJob, 
-  getJobs, 
-  findAllJobsByUser, 
-  findJobById, 
-  updateJob,
-  deleteJob,
+  return deleted;
 };

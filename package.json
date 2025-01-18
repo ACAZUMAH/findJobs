@@ -31,6 +31,8 @@
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.3",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "rate-limiter": "^0.2.0",
     "swagger-ui-express": "^5.0.1",
     "typescript": "^5.6.2",
