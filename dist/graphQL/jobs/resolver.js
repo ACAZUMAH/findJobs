@@ -34,12 +34,24 @@ const createJob = (_, args, { user }) => {
 const getJobs = (_, args) => {
     return jobService.getJobs(args.filters);
 };
+const getJob = (_, args) => {
+    return jobService.findJobById(args.id);
+};
+const updateJob = (_, args) => {
+    return jobService.updateJobById(args.data);
+};
+const deleteJob = (_, args, { user }) => {
+    return jobService.deleteJob(`${user?._id}`, args.id);
+};
 exports.jobsResolvers = {
     Query: {
+        getJob,
         getJobs
     },
     Mutation: {
-        createJob
+        createJob,
+        updateJob,
+        deleteJob
     },
     Job: {
         user

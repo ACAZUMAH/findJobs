@@ -35,3 +35,14 @@ export interface jobsfilter {
     position?: string | null
     salary?: string | number | null
 }
+
+export interface updateJob {
+  id: string
+  company?: string | null;
+  location?: string | null;
+  workArrangement?: WorkArrangement | null;
+  position?: string | null;
+  description?: string | null;
+  requirements?: string[] | null;
+  salary?: number | null;
+}

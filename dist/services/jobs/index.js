@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteJob = exports.updateJob = exports.findJobById = exports.findAllJobsByUser = exports.getJobs = exports.saveJob = void 0;
+exports.deleteJob = exports.updateJobById = exports.findJobById = exports.findAllJobsByUser = exports.getJobs = exports.saveJob = void 0;
 const mongoose_1 = require("mongoose");
 const models_1 = require("../../models");
 const http_errors_1 = __importDefault(require("http-errors"));
 const validators_1 = require("./validators");
-const helpers_1 = require("src/common/helpers");
+const helpers_1 = require("../../common/helpers");
 /**
  * create job
  * @param data job information
@@ -86,14 +86,16 @@ const findAllJobsByUser = async (filter) => {
 };
 exports.findAllJobsByUser = findAllJobsByUser;
 /**
- * this function gets a one job from the database by id
+ * get job by id
  * @param userId user id
  * @param jobId job id
  * @returns one job by id
  * @throws BadRequest if job not found
  */
-const findJobById = async (userId, jobId) => {
-    const data = await models_1.jobModel.findOne({ createdBy: userId, _id: jobId });
+const findJobById = async (jobId) => {
+    if (!mongoose_1.Types.ObjectId.isValid(jobId))
+        throw new http_errors_1.default.BadRequest('Invalid job id');
+    const data = await models_1.jobModel.findOne({ _id: jobId });
     if (!data)
         throw new http_errors_1.default.BadRequest("job not found");
     return data;
@@ -104,16 +106,20 @@ exports.findJobById = findJobById;
  * @param data userId, jobId and new job data to update
  * @returns updated job
  */
-const updateJob = async (data) => {
-    if (data.company || data.position || data.status || data.salary) {
-        const newUpdate = await models_1.jobModel.findOneAndUpdate({
-            _id: data.jobId,
-            createdBy: data.userId,
-        }, { $set: { ...data } });
-        return newUpdate;
-    }
+const updateJobById = async (data) => {
+    const job = await (0, exports.findJobById)(data.id);
+    const updateData = {
+        ...(data.company && { company: data.company }),
+        ...(data.location && { location: data.location }),
+        ...(data.position && { position: data.position }),
+        ...(data.description && { description: data.description }),
+        ...(data.workArrangement && { workArrangement: data.workArrangement }),
+        ...(data.requirements && { requirements: data.requirements }),
+        ...(data.salary && { salary: data.salary })
+    };
+    return await models_1.jobModel.findByIdAndUpdate({ _id: job._id }, { $set: updateData }, { new: true });
 };
-exports.updateJob = updateJob;
+exports.updateJobById = updateJobById;
 /**
  * this function deletes a job from the database
  * @param userId user id
@@ -122,62 +128,12 @@ exports.updateJob = updateJob;
  * @throws BadRequest if job not found
  */
 const deleteJob = async (userId, jobId) => {
+    if (!mongoose_1.Types.ObjectId.isValid(jobId) || !mongoose_1.Types.ObjectId.isValid(userId))
+        throw new http_errors_1.default.BadRequest("Invalid job Id or user id");
     const deleted = await models_1.jobModel.findOneAndDelete({ createdBy: userId, _id: jobId });
     if (!deleted)
         throw new http_errors_1.default.BadRequest("job not found");
-    return true;
+    return deleted;
 };
 exports.deleteJob = deleteJob;
-/**
- * filter jobs by company, position, status, salary, page, limits and sortBy
- * and return the result
- * @param query query parameters
- * @returns result of filtered jobs
- * @throws BadRequest if no jobs found
- */
-// export const filterJobs = async( query: queryType) => {
-//   const { company, position, status, salary, page, limits, sortBy } = query;
-//   const queryObject: queryType = {};
-//   if (company) queryObject.company = company;
-//   if (position) queryObject.position = position;
-//   if (status) queryObject.status = status;
-//   if (salary){
-//     const operatorMap = {
-//       '>': '$gt',
-//       '>=': '$gte',
-//       '=': '$eq',
-//       '<': '$lt',
-//       '<=': '$lte'
-//     }
-//     const regEx = /\b(<|>|>=|=|<|<=)\b/g;
-//     const filter = (salary as string).replace(regEx, (matched) => `-${operatorMap[matched]}-`);
-//     filter.split(',')
-//     .forEach((item) => {
-//       const [field, operator, value] = item.split('-');
-//       queryObject[field] = { [operator]: Number(value) };
-//     });
-//   }
-//   let result = job.find(queryObject);
-//   if (sortBy){
-//     const sortfields = (sortBy as string).split(',').join(' ')
-//     result = result.sort(sortfields)
-//   }else{
-//     result = result.sort('createdAt')
-//   }
-//   const pages = Number(page) || 1
-//   const limit = Number(limits) || 20
-//   const skip = (pages - 1) * limit
-//   result = result.skip(skip).limit(limit)
-//   const product = await result
-//   if (!product) throw new createHttpError.BadRequest("No jobs found");
-//   return product;
-// }
-exports.default = {
-    saveJob: exports.saveJob,
-    getJobs: exports.getJobs,
-    findAllJobsByUser: exports.findAllJobsByUser,
-    findJobById: exports.findJobById,
-    updateJob: exports.updateJob,
-    deleteJob: exports.deleteJob,
-};
 //# sourceMappingURL=index.js.map

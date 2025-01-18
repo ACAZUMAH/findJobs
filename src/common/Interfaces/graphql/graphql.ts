@@ -55,8 +55,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']['output']>;
   createJob: Job;
+  deleteJob: Job;
   loginWithPhoneAndPassword: Authenticated;
   signupWithPhoneAndPassword: SignupResponse;
+  updateJob: Job;
   updateUser: User;
   verifyOtp: Authenticated;
 };
@@ -67,6 +69,11 @@ export type MutationCreateJobArgs = {
 };
 
 
+export type MutationDeleteJobArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationLoginWithPhoneAndPasswordArgs = {
   data?: InputMaybe<LoginInput>;
 };
@@ -74,6 +81,11 @@ export type MutationLoginWithPhoneAndPasswordArgs = {
 
 export type MutationSignupWithPhoneAndPasswordArgs = {
   data?: InputMaybe<SignupInput>;
+};
+
+
+export type MutationUpdateJobArgs = {
+  data?: InputMaybe<UpdateJobInput>;
 };
 
 
@@ -169,6 +181,17 @@ export type SignupResponse = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
+export type UpdateJobInput = {
+  company?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  location?: InputMaybe<Scalars['String']['input']>;
+  position?: InputMaybe<Scalars['String']['input']>;
+  requirements?: InputMaybe<Array<Scalars['String']['input']>>;
+  salary?: InputMaybe<Scalars['Float']['input']>;
+  workArrangement?: InputMaybe<WorkArrangement>;
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -259,6 +282,7 @@ export type ResolversTypes = {
   otpInput: OtpInput;
   signupInput: SignupInput;
   signupResponse: ResolverTypeWrapper<SignupResponse>;
+  updateJobInput: UpdateJobInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -281,6 +305,7 @@ export type ResolversParentTypes = {
   otpInput: OtpInput;
   signupInput: SignupInput;
   signupResponse: SignupResponse;
+  updateJobInput: UpdateJobInput;
 };
 
 export type JobResolvers<ContextType = any, ParentType extends ResolversParentTypes['Job'] = ResolversParentTypes['Job']> = {
@@ -300,8 +325,10 @@ export type JobResolvers<ContextType = any, ParentType extends ResolversParentTy
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createJob?: Resolver<ResolversTypes['Job'], ParentType, ContextType, Partial<MutationCreateJobArgs>>;
+  deleteJob?: Resolver<ResolversTypes['Job'], ParentType, ContextType, RequireFields<MutationDeleteJobArgs, 'id'>>;
   loginWithPhoneAndPassword?: Resolver<ResolversTypes['authenticated'], ParentType, ContextType, Partial<MutationLoginWithPhoneAndPasswordArgs>>;
   signupWithPhoneAndPassword?: Resolver<ResolversTypes['signupResponse'], ParentType, ContextType, Partial<MutationSignupWithPhoneAndPasswordArgs>>;
+  updateJob?: Resolver<ResolversTypes['Job'], ParentType, ContextType, Partial<MutationUpdateJobArgs>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, Partial<MutationUpdateUserArgs>>;
   verifyOtp?: Resolver<ResolversTypes['authenticated'], ParentType, ContextType, Partial<MutationVerifyOtpArgs>>;
 };
