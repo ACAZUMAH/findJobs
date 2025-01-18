@@ -48,8 +48,21 @@ exports.jobTypeDefs = `#graphql
         salary: Float!
     }
 
+    input updateJobInput {
+        id: ID!
+        company: String
+        location: String
+        workArrangement: WorkArrangement
+        position: String
+        description: String
+        requirements: [String!]
+        salary: Float
+    }
+
     extend type Mutation {
         createJob(data: CreateJobInput): Job!
+        updateJob(data: updateJobInput): Job!
+        deleteJob(id: ID!): Job!
     }
 `;
 //# sourceMappingURL=typeDef.js.map
