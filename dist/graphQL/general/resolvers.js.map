@@ -1,0 +1,1 @@
+{"version":3,"file":"resolvers.js","sourceRoot":"","sources":["../../../src/graphQL/general/resolvers.ts"],"names":[],"mappings":";;;AACa,QAAA,gBAAgB,GAAG;IAC5B,KAAK,EAAE;QACH,KAAK,EAAE,GAAG,EAAE,CAAC,aAAa;KAC7B;CACJ,CAAC"}

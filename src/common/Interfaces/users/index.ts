@@ -3,7 +3,8 @@ import { Types } from "mongoose"
 export interface userDocument {
     _id: Types.ObjectId
     username: string
-    name?: string | null
+    firstName?: string | null,
+    lastName?: string | null,
     email?: string | null
     phone: string
     password: string
@@ -24,7 +25,8 @@ export interface loginUserInput {
 export interface updateUserInput {
     id: string | Types.ObjectId
     usename?: string
-    name?: string | null
+    firstName?: string | null
+    lastName?: string | null
     email?: string | null
     phone?: string | null
 }

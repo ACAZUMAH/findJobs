@@ -2,10 +2,12 @@ export const userTypeDefs = `#graphql
     type User {
         id: ID!
         username: String!
-        name: String
+        firstName: String
+        lastName: String
         email: String
         phone: String
         isAuthenticated: Boolean
+        jobs: Job
     }
 
     extend type Query {
@@ -14,12 +16,13 @@ export const userTypeDefs = `#graphql
     }
 
     extend type Mutation {
-        updateUser(data: updateUserInput): User!
+        updateUser(data: UpdateUserInput): User!
     }
 
-    input updateUserInput {
+    input UpdateUserInput {
         username: String
-        name: String 
+        firstName: String 
+        lastName: String
         email: String
         phone: String
     }

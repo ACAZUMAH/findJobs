@@ -9,6 +9,11 @@ const config: CodegenConfig = {
         'src/common/interfaces/graphql/graphql.ts': {
             plugins: ["typescript", "typescript-resolvers"]
         }
+    },
+    config: {
+        namingConvention: {
+            enumValues: 'change-case-all#upperCase'
+        }
     }
 };
 

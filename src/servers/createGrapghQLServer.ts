@@ -4,6 +4,7 @@ import { ApolloServer, ContextFunction } from "@apollo/server";
 import { expressMiddleware, ExpressContextFunctionArgument } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { CreateGraphQLServer, GraphqlContext } from "../common/Interfaces";
+import { createDataLoaders } from "../dataloader";
 import { formatError } from "./formatError";
 import { isProduction } from "../common/contstants";
 import { createGraphQLsubscriptionServer } from "./createGrapghQLSubscriptionServer";
@@ -11,10 +12,12 @@ import { createGraphQLsubscriptionServer } from "./createGrapghQLSubscriptionSer
 const context: ContextFunction<[ExpressContextFunctionArgument], GraphqlContext> = async ({ req }) => {
     const token = req.token;
     const user = req.user;
+    const dataLoaders = createDataLoaders();
 
     return {
         user,
         token,
+        ...dataLoaders
     };
 };
 
@@ -24,16 +27,10 @@ export const createGraphQLServer = async ({ app, schema, httpServer }: CreateGra
         schema,
         formatError,
         introspection: !isProduction,
-        plugins: [
-           {
-                async serverWillStart() {
-                    return {
-                        async drainServer() {
-                            await subscriptionServerCleanup.dispose()
-                        }
-                    }
-                }
-            },
+        plugins: [{
+            async serverWillStart() { return {
+                async drainServer() { await subscriptionServerCleanup.dispose() }}
+            }},
             ApolloServerPluginDrainHttpServer({httpServer})
         ]
     });

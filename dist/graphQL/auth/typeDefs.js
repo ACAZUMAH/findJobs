@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authTypeDef = void 0;
-exports.authTypeDef = `#graphql
+exports.authTypeDefs = void 0;
+exports.authTypeDefs = `#graphql
     type authenticated {
         user: User!
         token: String
@@ -11,14 +11,14 @@ exports.authTypeDef = `#graphql
         message: String
     }
 
-    type Query {
+    extend type Query {
         auth: authenticated
     }
 
-    type Mutation {
-        signupWithPhoneAndPassword(input: signupInput): signupResponse!
-        loginWithPhoneAndPassword(input: loginInput): authenticated!
-        verifyOtp(input: otpInput): authenticated!
+    extend type Mutation {
+        signupWithPhoneAndPassword(data: signupInput): signupResponse!
+        loginWithPhoneAndPassword(data: loginInput): authenticated!
+        verifyOtp(data: otpInput): authenticated!
     }
 
     input signupInput {

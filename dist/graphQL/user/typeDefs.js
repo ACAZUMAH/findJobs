@@ -1,19 +1,33 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userTypeDef = void 0;
-exports.userTypeDef = `#graphql 
+exports.userTypeDefs = void 0;
+exports.userTypeDefs = `#graphql 
     type User {
         id: ID!
         username: String!
-        name: String
+        firstName: String
+        lastName: String
         email: String
         phone: String
         isAuthenticated: Boolean
+        jobs: Job
     }
 
-    type Query {
-        me: User 
+    extend type Query {
+        me: User!
         user(id: ID!): User!
+    }
+
+    extend type Mutation {
+        updateUser(data: UpdateUserInput): User!
+    }
+
+    input UpdateUserInput {
+        username: String
+        firstName: String 
+        lastName: String
+        email: String
+        phone: String
     }
 `;
 //# sourceMappingURL=typeDefs.js.map

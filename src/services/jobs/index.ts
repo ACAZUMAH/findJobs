@@ -1,51 +1,99 @@
-import { Types } from "mongoose";
+import { FilterQuery, QueryOptions, Types } from "mongoose";
 import { jobModel } from "../../models";
-import { job as jobType, queryType, update } from "../types";
-import createHttpError from "http-errors";
-
+import { queryType, update } from "../types";
+import createError from "http-errors";
+import { validateJobData } from "./validators";
+import { createJob, jobDocument, jobsfilter } from "../../common/Interfaces";
+import { 
+  getPageConnection, 
+  getSanitizeLimit, 
+  getSanitizeOffset, 
+  getSanitizePage 
+} from "src/common/helpers";
 
 /**
- * this function saves a job to the database
+ * create job
  * @param data job information
  * @returns saved job
  * @throws Error if job creation failed
  */
-export const saveJob = async (data: jobType) => {
+export const saveJob = async (data: createJob) => {
+  validateJobData(data);
+  
   const create = await jobModel.create({ ...data });
+
   if (!create) throw new Error("Job creation failed");
+
   return create;
 };
 
 /**
- * this function gets all jobs from the database
+ * get jobs 
  * @param query query parameters
  * @returns all jobs
  * @throws Error if no jobs found
  */
-export const getJobs = async (query: queryType) => {
-  let page = Number(query.page) || 1;
-  let limit = Number(query.limits) || 10;
-  const skips = (page - 1) * limit
-  const jobs = jobModel.find({});
-  const result = await jobs.skip(skips).limit(limit)
-  if (!result) throw new Error("No jobs found");
-  return result;
+export const getJobs = async (filter: jobsfilter) => {
+  const query: FilterQuery<jobDocument> = {
+    ...(filter.createdBy && { createdBy: filter.createdBy }),
+    ...(filter.company && { company: filter.company }),
+    ...(filter.location && { location: filter.location }),
+    ...(filter.position && { position: filter.position }),
+    ...(filter.workArrangement && { workArrangement: filter.workArrangement }),
+    ...(filter.search && { 
+      $or: [
+        { description: { $regex: filter.search, $options: 'i'} },
+        { company: { $regex: filter.search, $options: 'i' } },
+        { position: { $regex: filter.search, $options: 'i' } },
+        { requirements: [{ $regex: filter.search, $options: 'i' }] },
+        { location: { $regex: filter.search, $options: 'i' } },
+        { workArrangement: { $regex: filter.search, $options: 'I' } }
+      ]
+    })
+  };
+  
+  const page = getSanitizePage(filter.page);
+  const limit = getSanitizeLimit(filter.limit);
+  const skip = getSanitizeOffset(page, limit);
+
+  const options: QueryOptions = {
+    skip,
+    lean: true,
+    limit: limit + 1,
+    sort: { createdAt: -1 }
+  };
+
+  const jobs = await jobModel.find(query, null, options);
+
+  return getPageConnection(jobs, page, limit);
 };
 
 /**
- * this function gets all jobs posted by a user
+ * get all jobs posted by a user
  * @param userId user id
  * @returns all jobs by user
  * @throws BadRequest if user has no posted jobs
  */
-export const findAllJobsByUser = async (userId: string | Types.ObjectId, query: queryType) => {
-  let page = Number(query.page) || 1;
-  let limit = Number(query.limits) || 10;
-  const skips = (page - 1) * limit;
-  const jobs = jobModel.find({ createdBy: userId });
-  const result = await jobs.skip(skips).limit(limit);
-  if (!result) throw new createHttpError.BadRequest("user has no posted jobs");
-  return result;
+export const findAllJobsByUser = async (filter: jobsfilter) => {
+  if(!Types.ObjectId.isValid(filter.createdBy!)) throw new createError.BadRequest("Invalid createdBy id");
+
+  const query: FilterQuery<jobDocument> = {
+    ...(filter.createdBy && { createdBy: filter.createdBy } )
+  }
+
+  const page = getSanitizePage(filter.page);
+  const limit = getSanitizeLimit(filter.limit);
+  const skip = getSanitizeOffset(page, limit);
+
+  const options: QueryOptions = { 
+    skip,
+    lean: true,
+    limit: limit + 1,
+    sort: { createdAt: -1 }
+  }
+  const jobs = await jobModel.find(query, null, options);
+
+  return getPageConnection(jobs, page, limit)
 };
 
 /**
@@ -60,7 +108,7 @@ export const findJobById = async (
   jobId: string | Types.ObjectId
 ) => {
   const data = await jobModel.findOne({ createdBy: userId, _id: jobId });
-  if (!data) throw new createHttpError.BadRequest("job not found");
+  if (!data) throw new createError.BadRequest("job not found");
   return data;
 };
 
@@ -94,7 +142,7 @@ export const deleteJob = async (
   jobId: string | Types.ObjectId
 ) => {
   const deleted = await jobModel.findOneAndDelete({ createdBy: userId, _id: jobId});
-  if (!deleted) throw new createHttpError.BadRequest("job not found");
+  if (!deleted) throw new createError.BadRequest("job not found");
   return true
 };
 
