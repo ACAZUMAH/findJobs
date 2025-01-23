@@ -6,9 +6,14 @@ export interface userDocument {
     firstName?: string | null,
     lastName?: string | null,
     email?: string | null
-    phone: string
-    password: string
+    phone?: string | null
+    password?: string | null
     isAuthenticated: boolean
+}
+
+export interface GoogleUser {
+    email: string,
+    username: string,
 }
 
 export interface createUserInput {

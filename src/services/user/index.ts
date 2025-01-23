@@ -1,8 +1,14 @@
 import { userModel } from '../../models';
 import createError from 'http-errors';
 import { Types } from 'mongoose';
-import { createUserInput, updateUserInput } from '../../common/Interfaces';
+import { GoogleUser, createUserInput, updateUserInput } from '../../common/Interfaces';
 import { validateCreateUserData, validateUpdateUserData } from './validators';
+
+
+export const createGoogleUser = async (data: GoogleUser) => {
+    const user = await userModel.create({ ...data });
+    return user;
+};
 
 /**
  * this function creates a new user and returns the created user
@@ -44,10 +50,10 @@ export const getUserById = async (id: string | Types.ObjectId) => {
  * @param id - user's id
  * @returns updated user
  */
-export const updateisAuthenticated = async (id: string | Types.ObjectId) => {
+export const updateisAuthenticated = async (id: string | Types.ObjectId, opt: boolean) => {
     const update = await userModel.findByIdAndUpdate(
         id, 
-        { isAuthenticated: true },
+        { isAuthenticated: opt },
         { new: true }
     )
     if(!update) throw Error('Internal Server Error');
@@ -60,9 +66,13 @@ export const updateisAuthenticated = async (id: string | Types.ObjectId) => {
  * @returns  user
  * @throws  BadRequest if user does not exist
  */
-export const findUserByEmail = async (email: string) => {
-    const user = await userModel.findOne({ email }); 
-    if(!user) throw new createError.BadRequest('No user with this email');
+export const findUserByEmail = async (email?: string | null) => {
+    const query = {
+        ...(email && { email })
+    };
+
+    const user = await userModel.findOne(query); 
+    //if(!user) throw new createError.BadRequest('No user with this email');
     return user;
 };
 
