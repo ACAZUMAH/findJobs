@@ -3,11 +3,11 @@ import { Types } from "mongoose"
 export interface userDocument {
     _id: Types.ObjectId
     username: string
-    firstName?: string | null,
-    lastName?: string | null,
-    email?: string | null
-    phone?: string | null
-    password?: string | null
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+    password?: string
     isAuthenticated: boolean
 }
 

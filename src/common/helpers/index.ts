@@ -105,6 +105,6 @@ export const getSanitizeOffset = (page: number, limit: number) => {
 export const getPageConnection = <T>(data: Array<T>, page: number, limit: number) => {
   const hasNextPage = data.length > limit;
   const edges = hasNextPage ? data.slice(0, limit) : data;
-  const pageInfo = { page, limit, total: data.length, hasNextPage };
-  return { data: edges, info: pageInfo }
+  const info = { page, limit, total: data.length, hasNextPage };
+  return { data: edges, info }
 };
