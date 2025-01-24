@@ -38,7 +38,7 @@ export const register = async (input: createUserInput) => {
 export const login = async (input: loginUserInput) => {
   const { phone, password } = input;
   const auth = await getUserByPhone(phone);
-  const isMatch = await comparePassword(password, auth.password);
+  const isMatch = await comparePassword(password, auth.password!);
   if (!isMatch) throw new createError.BadRequest("Invalid password");
   if (!auth.isAuthenticated) {
     const token = await createAuth(auth._id, 5);

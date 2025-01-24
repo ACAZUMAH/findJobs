@@ -3,12 +3,17 @@ import { Types } from "mongoose"
 export interface userDocument {
     _id: Types.ObjectId
     username: string
-    firstName?: string | null,
-    lastName?: string | null,
-    email?: string | null
+    firstName: string
+    lastName: string
+    email: string
     phone: string
-    password: string
+    password?: string
     isAuthenticated: boolean
+}
+
+export interface GoogleUser {
+    email: string,
+    username: string,
 }
 
 export interface createUserInput {
