@@ -4,7 +4,11 @@ import { Types } from 'mongoose';
 import { GoogleUser, createUserInput, updateUserInput } from '../../common/Interfaces';
 import { validateCreateUserData, validateUpdateUserData } from './validators';
 
-
+/**
+ * 
+ * @param data 
+ * @returns 
+ */
 export const createGoogleUser = async (data: GoogleUser) => {
     const user = await userModel.create({ ...data });
     return user;

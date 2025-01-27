@@ -1,28 +1,40 @@
 import helmet, { HelmetOptions } from "helmet";
 import cors from "cors";
-//import limit from "express-rate-limit";
-import express, { Application } from "express";
+import express from "express";
+import seesions from 'express-session'
+import passport from "passport";
+import mongoStore from 'connect-mongodb-session'
+import { logger } from "src/logger";
 
 const helmetOtpions: HelmetOptions = {
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
 }
 
-// const rate =   limit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-// })
-
 export const createExpressApp = () => {
   const app = express();
 
-  app.use(express.urlencoded({ extended: true }));
+  const sessionStore = mongoStore(seesions)
 
+  const store = new sessionStore({
+    uri: String(process.env.MONGO_URL),
+    collection: 'sessions'
+  })
+
+  store.on('error', (err) => logger.error(err))
+
+  app.use(express.urlencoded({ extended: true }));
   app.use(express.json({ limit: '50mb' }));
 
-  app.set("trust proxy", 1);
+  app.use(seesions({
+    secret: `${process.env.SESSION_SECRET}`,
+    resave: false,
+    saveUninitialized: false,
+    store,
+  }))
 
-  //app.use(rate);
+  app.use(passport.initialize())
+  app.use(passport.session())
 
   app.use(helmet(helmetOtpions));
   

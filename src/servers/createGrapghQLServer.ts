@@ -11,7 +11,7 @@ import { createGraphQLsubscriptionServer } from "./createGrapghQLSubscriptionSer
 
 const context: ContextFunction<[ExpressContextFunctionArgument], GraphqlContext> = async ({ req }) => {
     const token = req.token;
-    const user = req.user;
+    const user = req.User;
     const dataLoaders = createDataLoaders();
 
     return {
