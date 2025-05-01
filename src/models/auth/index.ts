@@ -7,4 +7,4 @@ const authSchema = new mongoose.Schema<authDocument>({
     expiresIn: { type: Date, required: true }
 })
 
-export const authModal = mongoose.model('auth', authSchema)
+export const authModal = mongoose.model<authDocument>('auth', authSchema)
